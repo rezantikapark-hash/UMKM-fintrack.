@@ -264,6 +264,19 @@ function renderChart() {
 
     days.push({ date, income, expense });
   }
+  const hasTransactions = days.some(
+  d => d.income > 0 || d.expense > 0
+);
+
+if (!hasTransactions) {
+  container.innerHTML = `
+    <div class="chart-empty">
+      <strong>Belum Ada Data Transaksi</strong>
+      <small>Catat pemasukan atau pengeluaran untuk melihat grafik keuangan.</small>
+    </div>
+  `;
+  return;
+}
 
   const max = Math.max(1, ...days.flatMap(d => [d.income, d.expense]));
 
