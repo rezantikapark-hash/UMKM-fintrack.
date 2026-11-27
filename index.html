@@ -1,0 +1,623 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMKM FinTrack | Dashboard Keuangan</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">F</div>
+      <div>
+        <h2>FinTrack</h2>
+        <small>UMKM Financial Hub</small>
+      </div>
+    </div>
+
+    <div class="menu-label">MENU UTAMA</div>
+    <nav>
+      <button class="nav-link active" data-page="dashboard">
+        <span>▦</span> Dashboard
+      </button>
+      <button class="nav-link" data-page="transactions">
+        <span>⇄</span> Transaksi
+      </button>
+      <button class="nav-link" data-page="products">
+        <span>▤</span> Produk & Stok
+      </button>
+      <button class="nav-link" data-page="calculator">
+  <span>▦</span>
+  Kalkulator HPP & BEP
+</button>
+
+<button class="nav-link" data-page="comparison">
+  <span>▥</span>
+  Perbandingan Produk
+</button>
+
+      <button class="nav-link" data-page="reports">
+        <span>▥</span> Laporan Keuangan
+      </button>
+      <button class="nav-link" data-page="advisor">
+        <span>✧</span> Smart Advisor
+      </button>
+      <button class="nav-link" data-page="education">
+        <span>◎</span> Edukasi Keuangan
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="help-card">
+        <div class="help-icon">✦</div>
+        <strong>Kelola usaha lebih cerdas!</strong>
+        <p>Pantau keuangan dan kembangkan bisnis bersama FinTrack.</p>
+      </div>
+      <div class="profile">
+        <div class="avatar">U</div>
+        <div>
+          <strong>UMKM Owner</strong>
+          <small>Business Account</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="mobile-menu" id="menuToggle">☰</button>
+        <div>
+          <div class="breadcrumb">Pages / <span id="crumb">Dashboard</span></div>
+          <h2 id="pageTitle">Dashboard Overview</h2>
+        </div>
+      </div>
+      <div class="top-right">
+        <div class="today" id="today"></div>
+        <div class="avatar">U</div>
+      </div>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <div class="welcome">
+        <div>
+          <span class="eyebrow">FINANCIAL OVERVIEW</span>
+          <h1>Selamat datang kembali! 👋</h1>
+          <p>Pantau perkembangan dan kesehatan keuangan usahamu hari ini.</p>
+        </div>
+        <button class="primary-btn" onclick="openModal()">＋ Tambah Transaksi</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-top"><span>Total Omzet</span><span class="stat-icon green">↗</span></div>
+          <h2 id="totalOmzet">Rp0</h2>
+          <small>Akumulasi pemasukan usaha</small>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span>Total Pengeluaran</span><span class="stat-icon orange">↘</span></div>
+          <h2 id="totalExpense">Rp0</h2>
+          <small>Akumulasi biaya usaha</small>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span>Laba Bersih</span><span class="stat-icon blue">✧</span></div>
+          <h2 id="totalProfit">Rp0</h2>
+          <small>Omzet dikurangi pengeluaran</small>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span>Total Transaksi</span><span class="stat-icon purple">⇄</span></div>
+          <h2 id="totalTransactions">0</h2>
+          <small>Jumlah seluruh transaksi</small>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="panel chart-panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Analisis Keuangan</h3>
+              <p>Perbandingan pemasukan dan pengeluaran</p>
+            </div>
+            <span class="tag">7 hari terakhir</span>
+          </div>
+          <div class="chart-legend">
+            <span><i class="dot income-dot"></i> Pemasukan</span>
+            <span><i class="dot expense-dot"></i> Pengeluaran</span>
+          </div>
+          <div class="chart" id="financeChart"></div>
+        </div>
+
+        <div class="panel health-panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Financial Health Score</h3>
+              <p>Kesehatan keuangan usaha</p>
+            </div>
+            <span class="info">i</span>
+          </div>
+          <div class="score-wrap">
+            <div class="score-circle" id="scoreCircle">
+              <div><strong id="healthScore">0</strong><small>/100</small></div>
+            </div>
+          </div>
+          <div class="score-status" id="healthStatus">Memuat analisis...</div>
+          <p class="score-desc" id="healthDesc">Analisis kondisi keuangan usahamu.</p>
+          <div class="score-progress">
+            <div class="progress-item"><span>Arus kas</span><strong id="cashScore">0%</strong></div>
+            <div class="progress-track"><div id="cashBar"></div></div>
+            <div class="progress-item"><span>Profitabilitas</span><strong id="profitScore">0%</strong></div>
+            <div class="progress-track"><div id="profitBar"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-grid lower-grid">
+        <div class="panel">
+          <div class="panel-heading">
+            <div><h3>Transaksi Terbaru</h3><p>Aktivitas keuangan usahamu</p></div>
+            <button class="text-btn" onclick="showPage('transactions')">Lihat semua →</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Deskripsi</th><th>Kategori</th><th>Tanggal</th><th>Jumlah</th></tr></thead>
+              <tbody id="recentTransactions"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <div><h3>Metode Pembayaran</h3><p>Komposisi pemasukan</p></div>
+          </div>
+          <div id="paymentStats" class="payment-stats"></div>
+        </div>
+      </div>
+
+
+      <!-- NOTIFIKASI STOK MENIPIS -->
+      <div class="panel" style="margin-bottom: 20px;">
+        <div class="panel-heading">
+          <div>
+            <h3>Notifikasi Stok Menipis</h3>
+            <p>Daftar produk yang perlu segera diperiksa.</p>
+          </div>
+          <span class="tag">Batas minimum: 10 unit</span>
+        </div>
+
+        <div id="stockNotifications">
+          <p class="empty">Memuat notifikasi stok...</p>
+        </div>
+      </div>
+
+      <div class="panel advisor-preview">
+        <div class="advisor-symbol">✧</div>
+        <div class="advisor-text">
+          <span class="eyebrow">SMART FINANCIAL ADVISOR</span>
+          <h3>Ingin tahu kondisi keuangan usahamu?</h3>
+          <p>Dapatkan rekomendasi pengelolaan keuangan berdasarkan catatan transaksi.</p>
+        </div>
+        <button class="secondary-btn" onclick="showPage('advisor')">Lihat Analisis →</button>
+      </div>
+    </section>
+
+    <section id="transactions" class="page">
+      <div class="section-intro">
+        <div><h1>Manajemen Transaksi</h1><p>Catat dan pantau seluruh pemasukan serta pengeluaran usaha.</p></div>
+        <button class="primary-btn" onclick="openModal()">＋ Tambah Transaksi</button>
+      </div>
+      <div class="stat-grid compact-grid">
+        <div class="stat-card"><small>Total Pemasukan</small><h2 id="transIncome">Rp0</h2></div>
+        <div class="stat-card"><small>Total Pengeluaran</small><h2 id="transExpense">Rp0</h2></div>
+        <div class="stat-card"><small>Jumlah Transaksi</small><h2 id="transCount">0</h2></div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading">
+          <div><h3>Riwayat Transaksi</h3><p>Daftar transaksi usaha</p></div>
+          <select id="filterType" class="filter-select" onchange="renderAll()">
+            <option value="all">Semua transaksi</option>
+            <option value="income">Pemasukan</option>
+            <option value="expense">Pengeluaran</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Deskripsi</th><th>Kategori</th><th>Metode</th><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+            <tbody id="allTransactions"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="page">
+      <div class="section-intro">
+        <div><h1>Produk & Persediaan</h1><p>Kelola produk dan pantau stok barang usahamu.</p></div>
+        <button class="primary-btn" onclick="addProduct()">＋ Tambah Produk</button>
+      </div>
+      <div class="stat-grid compact-grid">
+        <div class="stat-card"><small>Total Produk</small><h2 id="productCount">0</h2></div>
+        <div class="stat-card"><small>Total Stok</small><h2 id="stockCount">0</h2></div>
+        <div class="stat-card"><small>Stok Menipis</small><h2 id="lowStock">0</h2></div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Daftar Produk</h3><p>Persediaan produk UMKM</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nama Produk</th><th>Kategori</th><th>Harga Jual</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="productTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="reports" class="page">
+      <div class="section-intro">
+        <div><h1>Laporan Keuangan</h1><p>Ringkasan kondisi keuangan usaha berdasarkan data transaksi.</p></div>
+        <button class="secondary-btn" onclick="exportCSV()">↓ Unduh Laporan CSV</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><small>Total Omzet</small><h2 id="reportIncome">Rp0</h2></div>
+        <div class="stat-card"><small>Total Pengeluaran</small><h2 id="reportExpense">Rp0</h2></div>
+        <div class="stat-card"><small>Laba Bersih</small><h2 id="reportProfit">Rp0</h2></div>
+        <div class="stat-card"><small>Margin Laba</small><h2 id="reportMargin">0%</h2></div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Ringkasan Arus Kas</h3><p>Seluruh transaksi yang telah dicatat</p></div></div>
+        <div id="reportSummary" class="report-summary"></div>
+      </div>
+    </section>
+
+    <section id="advisor" class="page">
+      <div class="section-intro">
+        <div><h1>Smart Financial Advisor ✧</h1><p>Analisis sederhana dan rekomendasi berdasarkan kondisi keuangan usahamu.</p></div>
+        <span class="tag">Analisis otomatis</span>
+      </div>
+      <div class="advisor-score-card">
+        <div><span class="eyebrow">FINANCIAL HEALTH SCORE</span><h1 id="advisorScore">0/100</h1><p id="advisorStatus">Menunggu data transaksi</p></div>
+        <div class="large-star">✧</div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Rekomendasi Keuangan</h3><p>Saran berdasarkan data usaha yang tercatat</p></div></div>
+        <div id="recommendations" class="recommendations"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Simulasi Keputusan Bisnis</h3><p>Hitung perkiraan laba berdasarkan perubahan harga dan penjualan.</p></div></div>
+        <div class="simulator">
+          <label>Harga jual per produk (Rp)<input id="simPrice" type="number" value="15000" min="0"></label>
+          <label>Biaya modal per produk (Rp)<input id="simCost" type="number" value="8000" min="0"></label>
+          <label>Target penjualan (unit)<input id="simUnits" type="number" value="100" min="0"></label>
+          <button class="primary-btn" onclick="calculateSimulation()">Hitung Simulasi</button>
+        </div>
+        <div id="simulationResult" class="simulation-result">Masukkan data untuk melihat perkiraan keuntungan.</div>
+      </div>
+    </section>
+
+    <section id="education" class="page">
+      <div class="section-intro"><div><h1>Edukasi Keuangan</h1><p>Tingkatkan pemahaman mengenai pengelolaan keuangan dan teknologi finansial.</p></div></div>
+      <div class="education-grid">
+        <article class="education-card"><div class="education-icon">💰</div><span class="eyebrow">DASAR KEUANGAN</span><h3>Pisahkan Uang Pribadi dan Uang Usaha</h3><p>Pemisahan keuangan membantu mengetahui kondisi bisnis yang sebenarnya dan mencegah tercampurnya kebutuhan pribadi dengan modal usaha.</p></article>
+        <article class="education-card"><div class="education-icon">📊</div><span class="eyebrow">MANAJEMEN USAHA</span><h3>Pentingnya Pencatatan Keuangan</h3><p>Catat semua pemasukan dan pengeluaran agar keuntungan, kerugian, serta arus kas usaha dapat dipantau dengan baik.</p></article>
+        <article class="education-card"><div class="education-icon">📱</div><span class="eyebrow">FINTECH</span><h3>Manfaat Pembayaran Digital</h3><p>QRIS dan transfer digital membantu mempermudah pembayaran serta memberikan catatan transaksi yang lebih terstruktur.</p></article>
+        <article class="education-card"><div class="education-icon">🎯</div><span class="eyebrow">PERENCANAAN</span><h3>Bangun Dana Cadangan Usaha</h3><p>Sisihkan sebagian keuntungan untuk mengantisipasi kebutuhan mendadak dan menjaga kelangsungan operasional usaha.</p></article>
+      </div>
+    </section>
+
+<!-- HALAMAN KALKULATOR HPP DAN BEP -->
+<section class="page" id="calculator">
+
+  <div class="section-intro">
+    <div>
+      <div class="eyebrow">BUSINESS CALCULATOR</div>
+      <h1>Kalkulator HPP & BEP</h1>
+      <p>Hitung biaya produksi, harga jual, dan titik impas usaha.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-heading">
+      <div>
+        <h3>Data Produksi</h3>
+        <p>Masukkan estimasi biaya produksi usahamu.</p>
+      </div>
+      <span class="tag">Kalkulator UMKM</span>
+    </div>
+
+    <div class="simulator">
+
+      <label>
+  Pilih Produk dari Inventaris
+  <select id="calcProductSelect" onchange="selectCalculatorProduct()">
+    <option value="">-- Pilih Produk --</option>
+  </select>
+</label>
+
+<label>
+  Nama Produk
+  <input type="text" id="calcProduct"
+    placeholder="Nama produk akan terisi otomatis">
+</label>
+
+      <label>
+        Jumlah Produksi (unit)
+        <input type="number" id="calcUnits"
+          placeholder="100" min="1">
+      </label>
+
+      <label>
+        Total Biaya Bahan Baku (Rp)
+        <input type="number" id="calcMaterial"
+          placeholder="300000" min="0">
+      </label>
+
+      <label>
+        Biaya Tenaga Kerja (Rp)
+        <input type="number" id="calcLabor"
+          placeholder="100000" min="0">
+      </label>
+
+      <label>
+        Biaya Overhead Produksi (Rp)
+        <input type="number" id="calcOverhead"
+          placeholder="50000" min="0">
+      </label>
+
+      <label>
+        Biaya Tetap (Rp)
+        <input type="number" id="calcFixed"
+          placeholder="100000" min="0">
+      </label>
+
+      <label>
+        Harga Jual per Unit (Rp)
+        <input type="number" id="calcPrice"
+          placeholder="10000" min="1">
+      </label>
+
+      <label>
+        Biaya Variabel per Unit (Rp)
+        <input type="number" id="calcVariable"
+          placeholder="4500" min="0">
+      </label>
+
+      <button class="primary-btn" onclick="calculateHPP()">
+        Hitung HPP & BEP →
+      </button>
+
+    </div>
+  </div>
+
+  <div id="hppResult" style="display:none; margin-top:20px;">
+
+    <div class="panel-heading">
+      <div>
+        <h3>Hasil Analisis Produksi</h3>
+        <p>Ringkasan perhitungan usaha.</p>
+      </div>
+    </div>
+
+<!-- RIWAYAT ANALISIS HPP -->
+<div class="panel" style="margin-top:20px;">
+
+  <div class="panel-heading">
+    <div>
+      <h3>Riwayat Analisis Produk</h3>
+      <p>Daftar hasil perhitungan HPP dan keuntungan produk.</p>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+         <th>Peringkat</th>
+<th>Nama Produk</th>
+<th>HPP / Unit</th>
+<th>Harga Jual</th>
+<th>Laba / Unit</th>
+<th>Terjual</th>
+<th>Total Keuntungan</th>
+<th>Margin</th>
+        </tr>
+      </thead>
+      <tbody id="hppHistoryTable">
+        <tr>
+          <td colspan="6" class="empty">
+            Belum ada riwayat analisis.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+
+    <div class="stat-grid compact-grid">
+
+      <div class="stat-card">
+        <div class="stat-top">Total Biaya Produksi</div>
+        <h2 id="resultTotalCost">Rp0</h2>
+        <small>Total biaya produksi</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">HPP per Unit</div>
+        <h2 id="resultHPP">Rp0</h2>
+        <small>Biaya produksi per produk</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">Keuntungan per Unit</div>
+        <h2 id="resultProfit">Rp0</h2>
+        <small>Harga jual dikurangi HPP</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">BEP Unit</div>
+        <h2 id="resultBEP">0 unit</h2>
+        <small>Minimal penjualan untuk impas</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">BEP Rupiah</div>
+        <h2 id="resultBEPRupiah">Rp0</h2>
+        <small>Target omzet titik impas</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">Margin Keuntungan</div>
+        <h2 id="resultMargin">0%</h2>
+        <small>Persentase laba terhadap harga jual</small>
+      </div>
+
+    </div>
+
+    <div class="panel" style="margin-top:18px;">
+      <div class="panel-heading">
+        <div>
+          <h3>Kesimpulan Analisis</h3>
+          <p>Interpretasi hasil perhitungan.</p>
+        </div>
+      </div>
+
+      <div id="hppConclusion" class="simulation-result"></div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- HALAMAN PERBANDINGAN PRODUK -->
+<section class="page" id="comparison">
+  <div class="page-header">
+    <div>
+      <h2>Perbandingan Produk</h2>
+      <p>
+        Analisis produk paling menguntungkan berdasarkan hasil
+        perhitungan HPP.
+      </p>
+    </div>
+  </div>
+
+  <!-- RINGKASAN PRODUK TERBAIK -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p>Produk Paling Menguntungkan</p>
+      <h2 id="bestProductName">-</h2>
+      <span>Produk dengan laba per unit tertinggi</span>
+    </div>
+
+    <div class="stat-card">
+      <p>Total Keuntungan Tertinggi</p>
+      <h2 id="bestProductProfit">Rp 0</h2>
+      <span>Berdasarkan riwayat analisis HPP</span>
+    </div>
+
+    <div class="stat-card">
+      <p>Jumlah Produk Dianalisis</p>
+      <h2 id="totalComparedProducts">0</h2>
+      <span>Total analisis produk tersimpan</span>
+    </div>
+  </div>
+
+  <!-- GRAFIK PERBANDINGAN -->
+  <div class="panel" style="margin-top:20px;">
+    <div class="panel-heading">
+      <div>
+        <h3>Grafik Keuntungan Produk</h3>
+        <p>Perbandingan laba per unit setiap produk.</p>
+      </div>
+    </div>
+
+    <div id="productComparisonChart">
+      <p class="empty">Belum ada data perbandingan.</p>
+    </div>
+  </div>
+
+  <!-- TABEL PERBANDINGAN -->
+  <div class="panel" style="margin-top:20px;">
+    <div class="panel-heading">
+      <div>
+        <h3>Detail Perbandingan Produk</h3>
+        <p>Urutan produk berdasarkan laba per unit tertinggi.</p>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Peringkat</th>
+            <th>Nama Produk</th>
+            <th>HPP / Unit</th>
+            <th>Harga Jual</th>
+            <th>Laba / Unit</th>
+            <th>Margin</th>
+          </tr>
+        </thead>
+        <tbody id="productComparisonTable">
+          <tr>
+            <td colspan="6" class="empty">
+              Belum ada data perbandingan.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REKOMENDASI -->
+  <div class="panel" style="margin-top:20px;">
+    <div class="panel-heading">
+      <div>
+        <h3>💡 Rekomendasi Smart Business</h3>
+        <p>Informasi produk yang perlu diprioritaskan.</p>
+      </div>
+    </div>
+
+    <div id="productRecommendation">
+      Belum ada rekomendasi. Silakan analisis produk terlebih dahulu.
+    </div>
+  </div>
+</section>
+
+
+
+    <footer>© 2026 UMKM FinTrack · Kelola Keuangan, Pantau Keuntungan, Kembangkan Usaha.</footer>
+  </main>
+</div>
+
+<div class="modal-overlay" id="transactionModal">
+  <div class="modal">
+    <div class="modal-heading"><div><h2>Tambah Transaksi</h2><p>Masukkan informasi transaksi usaha.</p></div><button class="close-btn" onclick="closeModal()">×</button></div>
+    <form id="transactionForm">
+      <label>Jenis Transaksi<select id="type" required><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select></label>
+      <label>Deskripsi<input id="description" placeholder="Contoh: Penjualan produk" required></label>
+
+<label>Produk yang Dijual
+  <select id="saleProduct">
+    <option value="">-- Pilih Produk --</option>
+  </select>
+</label>
+
+<label>Jumlah Unit Terjual
+  <input id="saleQuantity" type="number" min="1" placeholder="Contoh: 10" value="1">
+</label>
+      <label>Kategori<select id="category"><option>Penjualan</option><option>Modal</option><option>Bahan Baku</option><option>Operasional</option><option>Transportasi</option><option>Lainnya</option></select></label>
+      <label>Jumlah (Rp)<input id="amount" type="number" min="1" placeholder="Contoh: 150000" required></label>
+      <label>Metode Pembayaran<select id="payment"><option>QRIS</option><option>Transfer</option><option>Tunai</option><option>E-Wallet</option></select></label>
+      <label>Tanggal<input id="date" type="date" required></label>
+      <button class="primary-btn full-btn" type="submit">Simpan Transaksi</button>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
