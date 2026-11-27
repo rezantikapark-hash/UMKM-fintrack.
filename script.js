@@ -243,6 +243,7 @@ function renderDashboard() {
   renderPaymentStats();
 }
 
+
 function renderChart() {
   const container = document.getElementById("financeChart");
   container.innerHTML = "";
@@ -255,20 +256,20 @@ function renderChart() {
 
     const income = transactions
       .filter(t => t.type === "income")
-      .reduce((s,t) => s + t.amount, 0);
+      .reduce((s, t) => s + t.amount, 0);
 
     const expense = transactions
       .filter(t => t.type === "expense")
-      .reduce((s,t) => s + t.amount, 0);
+      .reduce((s, t) => s + t.amount, 0);
 
-    days.push({date,income,expense});
+    days.push({ date, income, expense });
   }
 
-  const max = Math.max(1, ...days.flatMap(d => [d.income,d.expense]));
+  const max = Math.max(1, ...days.flatMap(d => [d.income, d.expense]));
 
   days.forEach(d => {
     const day = new Date(d.date + "T12:00:00")
-      .toLocaleDateString("id-ID",{weekday:"short"});
+      .toLocaleDateString("id-ID", { weekday: "short" });
 
     const wrap = document.createElement("div");
     wrap.className = "chart-day";
@@ -276,25 +277,45 @@ function renderChart() {
     const bars = document.createElement("div");
     bars.className = "bars";
 
-    const income = document.createElement("div");
-    income.className = "bar income";
-    income.style.height = Math.max(2,d.income/max*100) + "%";
-    income.title = "Pemasukan: " + rupiah(d.income);
+    function createChartBar(value, type, label) {
+      const group = document.createElement("div");
+      group.className = "chart-bar-group";
 
-    const expense = document.createElement("div");
-    expense.className = "bar expense";
-    expense.style.height = Math.max(2,d.expense/max*100) + "%";
-    expense.title = "Pengeluaran: " + rupiah(d.expense);
+      const valueLabel = document.createElement("small");
+      valueLabel.className = "chart-value";
 
-    bars.append(income,expense);
+      if (value >= 1000000) {
+        valueLabel.textContent = (value / 1000000).toFixed(1) + "jt";
+      } else if (value >= 1000) {
+        valueLabel.textContent =
+          (value / 1000).toFixed(1).replace(/\.0$/, "") + "rb";
+      } else {
+  valueLabel.textContent = value.toLocaleString("id-ID");
+}
+
+      const bar = document.createElement("div");
+      bar.className = "bar " + type;
+      bar.style.height = Math.max(2, value / max * 75) + "%";
+      bar.title = label + ": " + rupiah(value);
+
+      group.append(valueLabel, bar);
+
+      return group;
+    }
+
+    const income = createChartBar(d.income, "income", "Pemasukan");
+    const expense = createChartBar(d.expense, "expense", "Pengeluaran");
+
+    bars.append(income, expense);
 
     const label = document.createElement("small");
     label.textContent = day;
 
-    wrap.append(bars,label);
+    wrap.append(bars, label);
     container.appendChild(wrap);
   });
 }
+
 
 // ==========================================
 // TABEL TRANSAKSI
